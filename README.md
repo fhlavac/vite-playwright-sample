@@ -1,10 +1,6 @@
-# My React Vite TypeScript App
+# ComboBox value/onSelectionChange bug reproduction
 
-This project is a simple React application built with Vite and TypeScript. It serves as a template for creating new React applications with modern tooling.
-
-## Getting Started
-
-To get started with this project, follow the instructions below.
+This repository demonstrates an issue with the ComboBox component (@ui5/webcomponents-react): when the "value" prop changes (e.g. after data is loaded), the `onSelectionChange` handler is called automatically, even though the user did not select anything. This is undesired behavior.
 
 ### Prerequisites
 
@@ -27,31 +23,35 @@ Make sure you have the following installed on your machine:
    cd my-react-vite-app
    ```
 
-3. Install the dependencies:
+3. Install the dependencies and Playwright:
 
    ```bash
    npm install
+   npx playwright install
    ```
 
-### Running the Application
-
-To start the development server, run:
+4. Start the development server
 
 ```bash
 npm run dev
 ```
 
-This will start the Vite development server and open the application in your default web browser.
+The app will be available at http://localhost:3000
 
-### Building for Production
-
-To build the application for production, run:
+5. Run the Playwright test that demonstrates the issue
 
 ```bash
-npm run build
+npm run test:e2e
 ```
 
-This will create an optimized build of your application in the `dist` directory.
+The test opens the `/page1` page and you can observe that after data is loaded, onSelectionChange is triggered automatically.
+
+## How to reproduce the issue manually
+
+1. Start the app at `/page1` (for example, open http://localhost:3000/page1).
+2. After the page loads and simulated data is fetched (1 second delay), the ComboBox's `onSelectionChange` handler is called automatically (see the code: it navigates to `/onSelectCalledItself`).
+3. This is incorrect – the handler should only be called in response to a real user action.
+
 
 ### License
 
